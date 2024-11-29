@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Random Grey Box with Timer</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      height: 100vh;
+      width: 100vw;
+      overflow: hidden;
+      position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+    }
+
+    #grey-box {
+      width: 100px;
+      height: 100px;
+      background-color: grey;
+      position: absolute;
+      display: none;
+    }
+
+    #timer {
+      font-size: 24px;
+      margin-bottom: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div id="timer">Timer: 0 seconds</div>
+  <div id="grey-box"></div>
+  
+  <script>
+    let timer = 0;
+    let timerInterval;
+
+    function startTimer() {
+      // Reset timer to 0
+      timer = 0;
+      document.getElementById('timer').textContent = `Timer: ${timer} seconds`;
+
+      // Clear any existing interval
+      clearInterval(timerInterval);
+
+      // Start a new timer that increments every second
+      timerInterval = setInterval(() => {
+        timer++;
+        document.getElementById('timer').textContent = `Timer: ${timer} seconds`;
+      }, 1000);
+    }
+
+    function getRandomPosition() {
+      const viewportWidth = window.innerWidth;
+      const viewportHeight = window.innerHeight;
+
+      // Calculate random x and y positions within the viewport
+      const randomX = Math.floor(Math.random() * (viewportWidth - 100));
+      const randomY = Math.floor(Math.random() * (viewportHeight - 100));
+
+      return { x: randomX, y: randomY };
+    }
+
+    function getRandomInterval() {
+      // Get a random interval between 3 and 9 seconds
+      return Math.random() * (9000 - 3000) + 3000;
+    }
+
+    function showGreyBox() {
+      const greyBox = document.getElementById('grey-box');
+      const { x, y } = getRandomPosition();
+
+      // Set the box's position
+      greyBox.style.left = `${x}px`;
+      greyBox.style.top = `${y}px`;
+
+      // Show the box
+      greyBox.style.display = 'block';
+
+      // Reset and start the timer
+      startTimer();
+
+      // Hide the box after a short delay (e.g., 1 second)
+      setTimeout(() => {
+        greyBox.style.display = 'none';
+        // Schedule the next appearance
+        setTimeout(showGreyBox, getRandomInterval());
+      }, 1000);
+    }
+
+    // Run the function on load
+    window.onload = () => {
+      showGreyBox();
+    };
+  </script>
+</body>
+</html>
